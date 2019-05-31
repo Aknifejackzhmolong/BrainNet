@@ -12,9 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
+import org.springframework.ui.ModelMap;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -96,11 +98,11 @@ public class FileController {
         String fileDir = env.getProperty("filesys.dir");
         String userHomeDir = userBaseRepository.getOne(username).getHomeDirectory();
         File file = new File(fileDir + (userHomeDir + "/" + uri).replaceAll("\\./",""));
-        System.out.println(file.getAbsolutePath());
         if (!file.exists()) {
             response.sendError(402);
             return;
         }
+//        return "forward:/"+(userHomeDir + "/" + uri).replaceAll("\\./","");
         String fileName = uri.substring(uri.lastIndexOf('/')+1);
         if (file.isDirectory()) fileName = fileName + ".zip";
         response.setContentType("application/octet-stream");
@@ -113,7 +115,8 @@ public class FileController {
                 ZipUtils.toZip(file.getAbsolutePath(),sos, true);
             }else {
                 fis = new FileInputStream(file);
-                response.addHeader("Content-Length", String.valueOf(fis.available()));
+                response.addHeader("Content-Length", String.valueOf(file.length()));
+                System.out.println(file.getAbsolutePath()+" size:"+String.valueOf(file.length()));
                 byte[] buffer = new byte[1048576];// 一次读取1M
                 int i = fis.read(buffer);
                 while (i != -1) {
