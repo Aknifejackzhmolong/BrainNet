@@ -13,23 +13,7 @@ public interface UserRepository extends JpaRepository<UserEntity, String>, JpaSp
 
     List<UserEntity> findByUsername(String username);
 
-    @Query(value = "SELECT TRUE FROM user_role WHERE username = ?1 AND rid =1", nativeQuery = true)
-    Integer userIsStudent(String username);
-
-    @Modifying
-    @Query(value = "INSERT INTO user_role(username, rid) value(?1, 1) ", nativeQuery = true)
-    void insertUserRoleStudent(String username);
-
-    @Modifying
-    @Query(value = "INSERT INTO user_role(username, rid) value(?1, 2) ", nativeQuery = true)
-    void insertUserRoleMonitor(String username);
-
-    @Modifying
-    @Query(value = "INSERT INTO user_role(username, rid) value(?1, 3) ", nativeQuery = true)
-    void insertUserRoleInstructor(String username);
-
-    @Query(value = "select username from users", nativeQuery = true)
-    List<String> getAllUserId();
+    List<UserEntity> findByEMail(String email);
 
     @Query(value = "select password(?1)", nativeQuery = true)
     String getBcryt(String password);

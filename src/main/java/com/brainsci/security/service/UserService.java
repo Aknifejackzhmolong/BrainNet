@@ -27,6 +27,12 @@ public class UserService {
         return list.isEmpty() ? null : list.get(0);
     }
 
+    //根据用户名返回一个User实例
+    public UserEntity findByEmail(String email){
+        List<UserEntity> list = userRepository.findByEMail(email);
+        return list.isEmpty() ? null : list.get(0);
+    }
+
     /**
      * 得到密文
      *

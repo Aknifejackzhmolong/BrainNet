@@ -51,6 +51,7 @@ public class LoginService {
 
     public UserEntity checkPassword(BaseAuthForm requestForm) throws LoginException {
         UserEntity userEntity = userService.findByUsername(requestForm.getUsername());
+        if(userEntity == null) userEntity = userService.findByEmail(requestForm.getUsername());
         if (userEntity == null || !userService.checkPlainText(userEntity, requestForm.getPassword())) {
             throw new LoginException(2, "账号或密码错误");
         }
@@ -59,7 +60,7 @@ public class LoginService {
 
     public LoginResponForm loginFromWeb(LoginRequestForm requestForm, HttpSession httpSession) throws LoginException {
         UserEntity userEntity = checkPassword(requestForm);
-        return check(requestForm.getUsername(), userEntity, httpSession);
+        return check(userEntity.getUsername(), userEntity, httpSession);
     }
 
     public LoginResponForm signUpFromWeb(SignUpRequestForm requestForm, HttpSession httpSession) throws SignUpException {
@@ -70,7 +71,7 @@ public class LoginService {
         UserBaseEntity userBaseEntity = new UserBaseEntity();
         userEntity.setUsername(username);
         userBaseEntity.setUsername(username);
-        userBaseEntity.setHomeDirectory("./"+username+"");
+        userBaseEntity.setHomeDirectory("./"+username);
         userEntity.setPassword(userService.getCipherText(password));
         userEntity.setName(requestForm.getName());
         userEntity.setAvatarUrl(requestForm.getAvatar());
@@ -84,7 +85,7 @@ public class LoginService {
     }
 
     private LoginResponForm check(String username, UserEntity userEntity, HttpSession httpSession) {
-        LoginResponForm loginResponForm = new LoginResponForm(userEntity.getName(), userEntity.getAvatarUrl());
+        LoginResponForm loginResponForm = new LoginResponForm(userEntity.getUsername(), userEntity.getAvatarUrl());
         httpSession.setAttribute("username", username);
         String token = TokenManager.createToken(httpSession.getId(), username);
         httpSession.setAttribute("token", token);

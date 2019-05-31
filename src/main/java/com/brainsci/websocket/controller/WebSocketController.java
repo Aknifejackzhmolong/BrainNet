@@ -21,11 +21,6 @@ public class WebSocketController {
     @Autowired
     private WebSocketServer webSocketServer;
 
-    @RequestMapping(value = "/index")
-    public String index() {
-        return "index";
-    }
-
     @RequestMapping(value = "/admin")
     public String admin(Model model) {
         int num = webSocketServer.getOnlineNum();
