@@ -4,34 +4,22 @@ import com.brainsci.filesys.repository.FileRepository;
 import com.brainsci.form.CommonResultForm;
 import com.brainsci.security.repository.UserBaseRepository;
 import com.brainsci.utils.FileHandleUtils;
-import com.brainsci.utils.RemoteAddrUtils;
 import com.brainsci.utils.ZipUtils;
-import io.lettuce.core.dynamic.annotation.Param;
-import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
-import org.springframework.ui.ModelMap;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.*;
-import java.lang.reflect.Array;
 import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.zip.ZipOutputStream;
 
 @RestController
 public class FileController {
