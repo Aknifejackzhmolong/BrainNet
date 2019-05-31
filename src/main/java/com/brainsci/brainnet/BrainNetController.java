@@ -2,7 +2,9 @@ package com.brainsci.brainnet;
 
 import com.brainsci.form.CommonResultForm;
 import com.brainsci.form.NetAnalysisOption;
+import com.brainsci.security.entity.UserEntity;
 import com.brainsci.security.repository.UserBaseRepository;
+import com.brainsci.security.repository.UserRepository;
 import com.brainsci.security.util.GsonPlus;
 import com.brainsci.service.MRIService;
 import com.brainsci.service.GretnaService;
@@ -17,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -25,12 +28,14 @@ public class BrainNetController {
     private final GretnaService gretnaService;
     private final MRIService MRIService;
     private final UserBaseRepository userBaseRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public BrainNetController(GretnaService gretnaService, MRIService MRIService, UserBaseRepository userBaseRepository) {
+    public BrainNetController(GretnaService gretnaService, MRIService MRIService, UserBaseRepository userBaseRepository, UserRepository userRepository) {
         this.gretnaService = gretnaService;
         this.MRIService = MRIService;
         this.userBaseRepository = userBaseRepository;
+        this.userRepository = userRepository;
     }
 
     @ApiOperation(value = "网络分析")
@@ -46,19 +51,65 @@ public class BrainNetController {
     @ApiOperation(value = "预处理(fMRI)")
     @PostMapping(value = "/fmri/{task}/{token}")
     public CommonResultForm cpac(@PathVariable("task") String task,@PathVariable("token") String token,@RequestBody Map<String, String> map, HttpServletRequest request, HttpSession httpSession) throws Exception{
-        String userHomeDir = userBaseRepository.getOne((String) httpSession.getAttribute("username")).getHomeDirectory();
+//        String userHomeDir = userBaseRepository.getOne((String) httpSession.getAttribute("username")).getHomeDirectory();
         String str = map.get("jsonstr");
         WebSocketServer.sendMessage(GsonPlus.GSON.toJson(new WebSocketMessageForm("cpacState", "submitted")),token);
-        MRIService.cpac(userHomeDir, task, token, str);
+        String username = (String) httpSession.getAttribute("username");
+        String userHomeDir = userBaseRepository.getOne(username).getHomeDirectory();
+        String email = userRepository.getOne(username).geteMail();
+        MRIService.cpac(new HashMap<String, String>(){{
+            this.put("username", username);
+            this.put("userHomeDir", userHomeDir);
+            this.put("email", email);
+        }}, task, token, str);
         return CommonResultForm.of204("success");
     }
     @ApiOperation(value = "预处理(sMRI)")
     @PostMapping(value = "/smri/{task}/{token}")
     public CommonResultForm sMRI(@PathVariable("task") String task,@PathVariable("token") String token,@RequestBody Map<String, String> map, HttpServletRequest request, HttpSession httpSession) throws Exception{
-        String userHomeDir = userBaseRepository.getOne((String) httpSession.getAttribute("username")).getHomeDirectory();
+//        String userHomeDir = userBaseRepository.getOne((String) httpSession.getAttribute("username")).getHomeDirectory();
         String str = map.get("jsonstr");
         WebSocketServer.sendMessage(GsonPlus.GSON.toJson(new WebSocketMessageForm("cpacState", "submitted")),token);
-        MRIService.sMRI(userHomeDir, task, token, str);
+        String username = (String) httpSession.getAttribute("username");
+        String userHomeDir = userBaseRepository.getOne(username).getHomeDirectory();
+        String email = userRepository.getOne(username).geteMail();
+        MRIService.sMRI(new HashMap<String, String>(){{
+            this.put("username", username);
+            this.put("userHomeDir", userHomeDir);
+            this.put("email", email);
+        }}, task, token, str);
+        return CommonResultForm.of204("success");
+    }
+    @ApiOperation(value = "预处理(sMRI,并行)")
+    @PostMapping(value = "/smriParallel/{task}/{token}")
+    public CommonResultForm smriParallel(@PathVariable("task") String task,@PathVariable("token") String token,@RequestBody Map<String, String> map, HttpServletRequest request, HttpSession httpSession) throws Exception{
+//        String userHomeDir = userBaseRepository.getOne((String) httpSession.getAttribute("username")).getHomeDirectory();
+        String str = map.get("jsonstr");
+        WebSocketServer.sendMessage(GsonPlus.GSON.toJson(new WebSocketMessageForm("cpacState", "submitted")),token);
+        String username = (String) httpSession.getAttribute("username");
+        String userHomeDir = userBaseRepository.getOne(username).getHomeDirectory();
+        String email = userRepository.getOne(username).geteMail();
+        MRIService.sMRI_parallel(new HashMap<String, String>(){{
+            this.put("username", username);
+            this.put("userHomeDir", userHomeDir);
+            this.put("email", email);
+        }}, task, token, str);
+        return CommonResultForm.of204("success");
+    }
+    @ApiOperation(value = "DTI")
+    @PostMapping(value = "/dti/{task}/{token}")
+    public CommonResultForm dti(@PathVariable("task") String task,@PathVariable("token") String token,@RequestBody Map<String, String> map, HttpServletRequest request, HttpSession httpSession) throws Exception{
+//        String userHomeDir = userBaseRepository.getOne((String) httpSession.getAttribute("username")).getHomeDirectory();
+        String str = map.get("jsonstr");
+        WebSocketServer.sendMessage(GsonPlus.GSON.toJson(new WebSocketMessageForm("cpacState", "submitted")),token);
+        String username = (String) httpSession.getAttribute("username");
+        String userHomeDir = userBaseRepository.getOne(username).getHomeDirectory();
+        String email = userRepository.getOne(username).geteMail();
+        MRIService.dti(new HashMap<String, String>(){{
+            this.put("username", username);
+            this.put("userHomeDir", userHomeDir);
+            this.put("email", email);
+        }}, task, token, str);
         return CommonResultForm.of204("success");
     }
     @ApiOperation(value = "网络模块状态")

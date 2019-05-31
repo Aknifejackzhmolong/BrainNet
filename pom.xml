@@ -23,6 +23,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
 		<skipTests>true</skipTests>
+		<jwt.version>0.9.1</jwt.version>
 	</properties>
 
 	<dependencies>
@@ -42,6 +43,19 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<!-- spring security-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<!-- jwt 取代session保存用户身份的一种方法，传统用session保存的方法在集群环境下难以共享session数据，
+		解决方法一个是用Redis共享和持久化session，
+		二就是使用jsonwebtoken，服务器无状态的一种设计思想，这样用户每次发送请求都要带上token而不是Cookies的sessionid-->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>${jwt.version}</version>
 		</dependency>
 		<!--Spring实现热部署的工具-->
 		<dependency>
@@ -94,28 +108,11 @@
 			<version>1.18.2</version>
 			<scope>provided</scope>
 		</dependency>
-		<!--&lt;!&ndash;Zxing二维码生成和识别&ndash;&gt;-->
-		<!--<dependency>-->
-			<!--<groupId>com.google.zxing</groupId>-->
-			<!--<artifactId>core</artifactId>-->
-			<!--<version>3.3.0</version>-->
-		<!--</dependency>-->
-		<!--<dependency>-->
-			<!--<groupId>net.glxn</groupId>-->
-			<!--<artifactId>qrgen</artifactId>-->
-			<!--<version>1.4</version>-->
-		<!--</dependency>-->
-		<!--&lt;!&ndash;Base64 encode/decode&ndash;&gt;-->
-		<!--<dependency>-->
-			<!--<groupId>commons-io</groupId>-->
-			<!--<artifactId>commons-io</artifactId>-->
-			<!--<version>2.6</version>-->
-		<!--</dependency>-->
-		<!--<dependency>-->
-			<!--<groupId>com.github.binarywang</groupId>-->
-			<!--<artifactId>weixin-java-pay</artifactId>-->
-			<!--<version>3.3.0</version>-->
-		<!--</dependency>-->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<version>4.2.4.RELEASE</version>
+		</dependency>
 	</dependencies>
 
 	<build>

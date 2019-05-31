@@ -7,9 +7,8 @@ import com.brainsci.security.form.ChangePasswordForm;
 import com.brainsci.security.form.LoginRequestForm;
 import com.brainsci.security.form.SignUpRequestForm;
 import com.brainsci.security.form.VerficationDataForm;
-import com.brainsci.security.repository.UserBaseRepository;
 import com.brainsci.security.service.LoginService;
-import com.brainsci.security.service.MailService;
+import com.brainsci.security.service.MailUtils;
 import com.brainsci.security.util.Image2Base64;
 import com.brainsci.security.util.LoginVerificationCode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +23,12 @@ import java.net.URLDecoder;
 public class LoginAndVerifyController {
 
     private final LoginService loginService;
-    private final MailService mailService;
+    private final MailUtils mailUtils;
 
     @Autowired
-    public LoginAndVerifyController(LoginService loginService, MailService mailService) {
+    public LoginAndVerifyController(LoginService loginService, MailUtils mailUtils) {
         this.loginService = loginService;
-        this.mailService = mailService;
+        this.mailUtils = mailUtils;
     }
 
     @PostMapping(value = "/live")
@@ -60,7 +59,7 @@ public class LoginAndVerifyController {
     public CommonResultForm sendVerMail(@RequestParam String email, HttpSession httpSession) throws IOException, FontFormatException {
         String random = ((int)((Math.random()*9+1)*100000))+"";
         httpSession.setAttribute("verifyCode", random+URLDecoder.decode(email, "UTF-8"));
-        mailService.sendMail(URLDecoder.decode(email, "UTF-8"), "Brain Sci Tools", random);
+        mailUtils.sendVerifyMail(URLDecoder.decode(email, "UTF-8"), "Brain Sci Tools", random);
         return CommonResultForm.of204("已生成验证码");
     }
 
