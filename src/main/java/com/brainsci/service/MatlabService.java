@@ -20,9 +20,9 @@ import java.util.Stack;
 import java.util.stream.Collectors;
 
 @Service
-public class GretnaService {
+public class MatlabService {
     private final String filedir;
-    public GretnaService(@Value("${filesys.dir}") String filedir, @Value("${filesys.path-matlab}") String matlabPath) {
+    public MatlabService(@Value("${filesys.dir}") String filedir, @Value("${filesys.path-matlab}") String matlabPath) {
         this.filedir = filedir;
         MatlabUtils.matlabApplication = new File(matlabPath);
     }

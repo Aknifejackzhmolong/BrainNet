@@ -66,7 +66,7 @@ public class LoginService {
     public LoginResponForm signUpFromWeb(SignUpRequestForm requestForm, HttpSession httpSession) throws SignUpException {
         String username = requestForm.getUsername();
         String password = requestForm.getPassword();
-        if (userService.findByUsername(username) != null) throw new SignUpException(2,"该用户名已被注册");
+        if (userService.findByUsername(username) != null) throw new SignUpException(2,"This username has been registered!");
         UserEntity userEntity = new UserEntity();
         UserBaseEntity userBaseEntity = new UserBaseEntity();
         userEntity.setUsername(username);

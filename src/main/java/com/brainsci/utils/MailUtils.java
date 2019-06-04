@@ -1,4 +1,4 @@
-package com.brainsci.security.service;
+package com.brainsci.utils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +15,8 @@ public class MailUtils {
     @Value("${mail.fromMail.addr}")
     private String from;
 
+    private final String TITLE =  "Brain Sci Tools";
+
     /**
      * @author zeng
      * @param to 收件人
@@ -23,9 +25,13 @@ public class MailUtils {
      */
     public void sendVerifyMail(String to, String subject, String verifyCode) {
         //创建邮件正文
-        String emailContent = "您的验证码为"+verifyCode+"\n" +
-                "验证码有效时间为30分钟，感谢您对本项目的支持\n" +
-                "若不是本人的操作，请忽视此邮件";
+        String emailContent = "Hello!\n"+
+                "Thank you for creating your BrainSci Tools Account. \n\n"+
+                "Verification code is "+verifyCode+"\n\n" +
+                "The verification code is valid in 30 minutes. \n" +
+                "If it is not your operation, please ignore this email. "+
+                "\n\nYours truly, \n" +
+                "BrainSci Tools Team";
         //将模块引擎内容解析成html字符串
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(from);
@@ -41,16 +47,21 @@ public class MailUtils {
             e.printStackTrace();
         }
     }
-    public void sendCompleteMail(String to, String username, String model, boolean success) {
+    public void sendCompleteMail(String to, String username, String model, String taskname, boolean success) {
         //创建邮件正文
-        String emailContent = String.format("尊敬的%s，您在本站(Brain Sci Tools)上运行的%s脚本"+(success?"已经处理完成，请查看\n\n":"处理失败") +
-                "感谢您对本项目的支持",username,model);
+        String emailContent = String.format("Dear %s: \n" +
+                "\tThe %s data which task name is '%s' are processed " +
+                (success?"successfully. \n" +
+                        "you can download data on BrainSci Tools site. \n" :
+                        "fail") +
+                "\n\nYours truly, \n" +
+                "BrainSci Tools Team",username,model,taskname);
         //将模块引擎内容解析成html字符串
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(from);
         message.setTo(to);
         // 主题
-        message.setSubject("脚本执行完成");
+        message.setSubject(TITLE);
         message.setText(emailContent);
         try {
             mailSender.send(message);

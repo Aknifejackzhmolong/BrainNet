@@ -2,12 +2,11 @@ package com.brainsci.brainnet;
 
 import com.brainsci.form.CommonResultForm;
 import com.brainsci.form.NetAnalysisOption;
-import com.brainsci.security.entity.UserEntity;
 import com.brainsci.security.repository.UserBaseRepository;
 import com.brainsci.security.repository.UserRepository;
 import com.brainsci.security.util.GsonPlus;
-import com.brainsci.service.MRIService;
-import com.brainsci.service.GretnaService;
+import com.brainsci.service.PythonService;
+import com.brainsci.service.MatlabService;
 import com.brainsci.utils.MatlabUtils;
 import com.brainsci.websocket.form.WebSocketMessageForm;
 import com.brainsci.websocket.server.WebSocketServer;
@@ -25,15 +24,15 @@ import java.util.Map;
 @RestController
 public class BrainNetController {
 
-    private final GretnaService gretnaService;
-    private final MRIService MRIService;
+    private final MatlabService matlabService;
+    private final PythonService pythonService;
     private final UserBaseRepository userBaseRepository;
     private final UserRepository userRepository;
 
     @Autowired
-    public BrainNetController(GretnaService gretnaService, MRIService MRIService, UserBaseRepository userBaseRepository, UserRepository userRepository) {
-        this.gretnaService = gretnaService;
-        this.MRIService = MRIService;
+    public BrainNetController(MatlabService matlabService, PythonService pythonService, UserBaseRepository userBaseRepository, UserRepository userRepository) {
+        this.matlabService = matlabService;
+        this.pythonService = pythonService;
         this.userBaseRepository = userBaseRepository;
         this.userRepository = userRepository;
     }
@@ -45,7 +44,7 @@ public class BrainNetController {
         if (MatlabUtils.state.containsKey(userHomeDir)) return CommonResultForm.of204("Tasks are "+MatlabUtils.state.get(userHomeDir)+", please wait");
         MatlabUtils.state.put(userHomeDir, "submitted");
         WebSocketServer.sendMessage(GsonPlus.GSON.toJson(new WebSocketMessageForm("gretnaState", "submitted")),token);
-        gretnaService.networkAnalysis(userHomeDir,task, token, para);
+        matlabService.networkAnalysis(userHomeDir,task, token, para);
         return CommonResultForm.of204("Tasks are queuing");
     }
     @ApiOperation(value = "预处理(fMRI)")
@@ -57,11 +56,11 @@ public class BrainNetController {
         String username = (String) httpSession.getAttribute("username");
         String userHomeDir = userBaseRepository.getOne(username).getHomeDirectory();
         String email = userRepository.getOne(username).geteMail();
-        MRIService.cpac(new HashMap<String, String>(){{
+        pythonService.runPyScript(new HashMap<String, String>(){{
             this.put("username", username);
             this.put("userHomeDir", userHomeDir);
             this.put("email", email);
-        }}, task, token, str);
+        }}, "fmri", task, token, str);
         return CommonResultForm.of204("success");
     }
     @ApiOperation(value = "预处理(sMRI)")
@@ -73,11 +72,11 @@ public class BrainNetController {
         String username = (String) httpSession.getAttribute("username");
         String userHomeDir = userBaseRepository.getOne(username).getHomeDirectory();
         String email = userRepository.getOne(username).geteMail();
-        MRIService.sMRI(new HashMap<String, String>(){{
+        pythonService.runPyScript(new HashMap<String, String>(){{
             this.put("username", username);
             this.put("userHomeDir", userHomeDir);
             this.put("email", email);
-        }}, task, token, str);
+        }}, "smri", task, token, str);
         return CommonResultForm.of204("success");
     }
     @ApiOperation(value = "预处理(sMRI,并行)")
@@ -89,11 +88,11 @@ public class BrainNetController {
         String username = (String) httpSession.getAttribute("username");
         String userHomeDir = userBaseRepository.getOne(username).getHomeDirectory();
         String email = userRepository.getOne(username).geteMail();
-        MRIService.sMRI_parallel(new HashMap<String, String>(){{
+        pythonService.runPyScript(new HashMap<String, String>(){{
             this.put("username", username);
             this.put("userHomeDir", userHomeDir);
             this.put("email", email);
-        }}, task, token, str);
+        }}, "smriParallel", task, token, str);
         return CommonResultForm.of204("success");
     }
     @ApiOperation(value = "DTI")
@@ -105,11 +104,11 @@ public class BrainNetController {
         String username = (String) httpSession.getAttribute("username");
         String userHomeDir = userBaseRepository.getOne(username).getHomeDirectory();
         String email = userRepository.getOne(username).geteMail();
-        MRIService.dti(new HashMap<String, String>(){{
+        pythonService.runPyScript(new HashMap<String, String>(){{
             this.put("username", username);
             this.put("userHomeDir", userHomeDir);
             this.put("email", email);
-        }}, task, token, str);
+        }}, "dti", task, token, str);
         return CommonResultForm.of204("success");
     }
     @ApiOperation(value = "网络模块状态")

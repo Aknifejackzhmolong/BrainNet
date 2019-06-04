@@ -8,7 +8,7 @@ import com.brainsci.security.form.LoginRequestForm;
 import com.brainsci.security.form.SignUpRequestForm;
 import com.brainsci.security.form.VerficationDataForm;
 import com.brainsci.security.service.LoginService;
-import com.brainsci.security.service.MailUtils;
+import com.brainsci.utils.MailUtils;
 import com.brainsci.security.util.Image2Base64;
 import com.brainsci.security.util.LoginVerificationCode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +60,7 @@ public class LoginAndVerifyController {
         String random = ((int)((Math.random()*9+1)*100000))+"";
         httpSession.setAttribute("verifyCode", random+URLDecoder.decode(email, "UTF-8"));
         mailUtils.sendVerifyMail(URLDecoder.decode(email, "UTF-8"), "Brain Sci Tools", random);
-        return CommonResultForm.of204("已生成验证码");
+        return CommonResultForm.of204("Verify Code has been generated!");
     }
 
     /**
@@ -76,7 +76,7 @@ public class LoginAndVerifyController {
         }
         try {
             loginService.checkVerificationAnswer(requestForm, httpSession);
-            return CommonResultForm.of200("登录成功", loginService.loginFromWeb(requestForm, httpSession));
+            return CommonResultForm.of200("login successfully", loginService.loginFromWeb(requestForm, httpSession));
         } catch (LoginException e) {
             return CommonResultForm.of400(e.getMessage());
         }
@@ -87,12 +87,12 @@ public class LoginAndVerifyController {
     @PostMapping(value = "/signup")
     public CommonResultForm signOn(@RequestBody SignUpRequestForm requestForm, HttpSession httpSession) {
         if (null != httpSession.getAttribute("username")) {
-            return CommonResultForm.of400("请注销后尝试注册");
+            return CommonResultForm.of400("Please log out and try to register");
         }
         try {
             String verifyCode = (String) httpSession.getAttribute("verifyCode");
-            if (verifyCode != null&&verifyCode.equals(requestForm.getVerifyCode()+requestForm.getEMail())) return CommonResultForm.of200("注册成功", loginService.signUpFromWeb(requestForm, httpSession));
-            else return CommonResultForm.of400("注册失败，验证码不正确");
+            if (verifyCode != null&&verifyCode.equals(requestForm.getVerifyCode()+requestForm.getEMail())) return CommonResultForm.of200("registered successfully", loginService.signUpFromWeb(requestForm, httpSession));
+            else return CommonResultForm.of400("Registration failed! Verification code error");
         } catch (SignUpException e) {
             return CommonResultForm.of400(e.getMessage());
         }
@@ -105,7 +105,7 @@ public class LoginAndVerifyController {
             return CommonResultForm.of400("不允许同一浏览器登录多次，已经注销，请重新登录");
         }
         try {
-            return CommonResultForm.of200("登陆成功", loginService.loginFromWeb(loginRequestForm, httpSession));
+            return CommonResultForm.of200("login success", loginService.loginFromWeb(loginRequestForm, httpSession));
         } catch (LoginException e) {
             return CommonResultForm.of400(e.getMessage());
         }
@@ -117,7 +117,7 @@ public class LoginAndVerifyController {
     @PostMapping(value = "/signout")
     public CommonResultForm logout(HttpSession httpSession) {
         loginService.logout(httpSession);
-        return new CommonResultForm(0, "已成功登出", null);
+        return new CommonResultForm(0, "log out", null);
     }
 
     /**
