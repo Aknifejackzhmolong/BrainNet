@@ -20,4 +20,7 @@ mvn install package
 # 后台启动服务
 java -jar brainnet-0.0.1-SNAPSHOT.jar --server.port=8080 --spring.profiles.active=dev > brainnet.log 2> brainnet.error &
 
+# 前端配置
+在打包得到的brainnet-0.0.1-SNAPSHOT.jar文件根目录下新建frontend文件夹，将编译得到的前端静态网页放入其中使用
+
 # 脚本和数据暂不提供
