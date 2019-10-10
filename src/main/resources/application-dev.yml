@@ -25,6 +25,12 @@ spring:
 server:
   port: 8001
 
+bsci:
+  processor:
+    handlers:
+      - id: gretna
+        boot: D:/Python37/python.exe
+        params: D:/code/python/test.py
 filesys:
   dir: ../dist/
   path-matlab: D:/Program Files/MATLAB/R2016b/bin/matlab.exe

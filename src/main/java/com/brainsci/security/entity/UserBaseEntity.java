@@ -10,6 +10,7 @@ public class UserBaseEntity {
     @Id
     private String username;
     private String homeDirectory;
+    private String email;
 
     public String getUsername() {
         return username;
@@ -25,5 +26,13 @@ public class UserBaseEntity {
 
     public void setHomeDirectory(String homeDirectory) {
         this.homeDirectory = homeDirectory;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

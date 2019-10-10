@@ -16,11 +16,33 @@ spring:
     store-type: none
     timeout: 72h
   mail:
-    host: smtp.csu.edu.cn  	#邮箱服务器地址
-    username: aknifejackzhmolong   #邮箱账号
-    password: 187dezhu			#邮箱密码
-    default-encoding: utf-8	#默认编码
+    host: smtp.csu.edu.cn    #邮箱服务器地址
+    username: xyzxzj   #邮箱账号
+    password: xyz673792            #邮箱密码
+    default-encoding: utf-8    #默认编码
 
+bsci:
+  processor:
+    handlers:
+      - id: fmri
+        boot: python
+        params: [/home/cdj/brainnet/python_pipeline/fmri_pipeline_parameter.py,<basepath>,<jsonparam>]
+        replace-all: [/public/fmri,./dist/public/fmri]
+#        output-taget: ./working
+        # 当使用<outputpath>时需设置output-taget
+      - id: smri
+        boot: python
+        params: [/home/cdj/brainnet/python_pipeline/T1_surface/freesurfer_recon.py,<basepath>,<jsonparam>]
+#        output-taget: ./working
+      - id: smriParallel
+        boot: python
+        params: [/home/cdj/brainnet/python_pipeline/T1_surface/freesurfer_recon_parallel.py,<basepath>,<jsonparam>]
+#        output-taget: ./working
+      - id: dti
+        boot: python
+        params: [/home/cdj/brainnet/python_pipeline/dwi_dti/dwi_pipeline_parameter.py,<basepath>,<jsonparam>]
+        replace-all: [/public/DTI,./dist/public/DTI]
+#        output-taget: ./working
 filesys:
   # filesys.dir以/结尾,不然SecurityConfig无法添加此资源
   dir: ./dist/
@@ -30,7 +52,7 @@ filesys:
 #邮件发件人
 mail:
   fromMail:
-    addr: aknifejackzhmolong@csu.edu.cn
+    addr: xyzxzj@csu.edu.cn
 
 
 

@@ -21,6 +21,13 @@ spring:
     password: 187dezhu			#邮箱密码
     default-encoding: utf-8	#默认编码
 
+bsci:
+  processor:
+    handlers:
+      - id: gretna
+        boot: python
+        params: D:/code/python/test.py
+        deleteTaget: data
 filesys:
   # filesys.dir以/结尾,不然SecurityConfig无法添加此资源
   dir: ./dist/

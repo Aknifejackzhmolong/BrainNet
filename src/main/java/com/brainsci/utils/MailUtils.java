@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Component
 public class MailUtils {
+    public static MailUtils currentMail;
     @Autowired
     private JavaMailSender mailSender;
     //邮件发件人
@@ -16,6 +17,10 @@ public class MailUtils {
     private String from;
 
     private final String TITLE =  "Brain Sci Tools";
+
+    public MailUtils() {
+        MailUtils.currentMail = this;
+    }
 
     /**
      * @author zeng

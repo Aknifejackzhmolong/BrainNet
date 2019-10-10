@@ -72,6 +72,7 @@ public class LoginService {
         userEntity.setUsername(username);
         userBaseEntity.setUsername(username);
         userBaseEntity.setHomeDirectory("./"+username);
+        userBaseEntity.setEmail(userEntity.geteMail());
         userEntity.setPassword(userService.getCipherText(password));
         userEntity.setName(requestForm.getName());
         userEntity.setAvatarUrl(requestForm.getAvatar());

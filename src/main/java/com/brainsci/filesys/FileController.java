@@ -56,8 +56,8 @@ public class FileController {
             for (File f : fileArr){
                 usrlicList.add(new HashMap<String, Object>(){{
                     this.put("name", f.getName());
-                    String path = f.getPath();
-                    path = f.getPath().substring(path.indexOf(uri)).replace("\\","/");
+                    String path = f.getPath().replace("\\","/");
+                    path = path.substring(path.indexOf(uri));
                     this.put("uri", "/MyFile/"+path);
                 }});
             }
@@ -104,7 +104,7 @@ public class FileController {
             }else {
                 fis = new FileInputStream(file);
                 response.addHeader("Content-Length", String.valueOf(file.length()));
-                System.out.println(file.getAbsolutePath()+" size:"+String.valueOf(file.length()));
+                System.out.println(file.getAbsolutePath()+" size:"+file.length());
                 byte[] buffer = new byte[1048576];// 一次读取1M
                 int i = fis.read(buffer);
                 while (i != -1) {
